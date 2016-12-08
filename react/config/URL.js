@@ -89,4 +89,8 @@ export default URL = {
      * 比赛详情
      */
     LOL_BAT_DETAIL:'http://lolapi.games-cube.com/GameDetail',
+
+    LOL_CHAMPION_RANK:'http://lolapi.games-cube.com/ChampionRank',
+
+    LOL_SEARCH_CHAMPION:'http://1.fz123456.sinaapp.com/LOL/searchChampion.php',
 };

@@ -212,7 +212,7 @@ export default class SearchUser extends Component{
         else {
             return(
                 <View style={{flex:1,backgroundColor:'#fff'}}>
-                    <PageTitle navigator={this.props.navigator} title="召唤师查询" showBack="false"/>
+                    <PageTitle navigator={this.props.navigator} title="召唤师查询" showBack={false}/>
                     <SearchInput
                         onClick={(text)=>this._handleClick(text)}
                         placeholder='查询召唤师'

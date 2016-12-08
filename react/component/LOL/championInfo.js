@@ -9,6 +9,8 @@ import Swiper from 'react-native-swiper';
 import HtmlView from 'react-native-htmlview';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import ChampionRankList from './championRankList';
+
 
 export default class ChampionInfo extends Component{
 
@@ -182,6 +184,21 @@ export default class ChampionInfo extends Component{
                                     </View>
                                 </View>
 
+                            </View>
+
+                            <View style={{flex:1}}>
+                                <TouchableOpacity onPress={()=>{
+                                    this.props.navigator.push({name:'championRankList',component:ChampionRankList,param:{'champion_id':this.props.id}});
+                                }}>
+                                    <View style={{flex:1,backgroundColor:'#6fa8dc',margin:10,height:40,flexDirection:'row',borderRadius:5}}>
+                                        <View style={{flex:6,justifyContent:'center',}}>
+                                            <Text style={{fontSize:15,marginLeft:20,color:'#fff'}}>查看熟练度排行</Text>
+                                        </View>
+                                        <View style={{flex:1,justifyContent:'center',}}>
+                                            <Icon name="angle-double-right" size={20} color="#fff"/>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
 
                             <View style={{flex:1}}>
