@@ -8,8 +8,8 @@ import CustomTabBar from './../../common/TabBar/index';
 import ChampionList from './championsList';
 import MyDetail from './myDetail';
 
-var tabNames = ['英雄','查询','排行','我'];
-var tabIconNames = ['legal','search','bar-chart-o','user'];
+var tabNames = ['英雄','查询','撸点','我'];
+var tabIconNames = ['legal','search','compass','user'];
 
 export default class Index extends Component{
 
@@ -23,7 +23,7 @@ export default class Index extends Component{
                     >
                         <View style={{flex:1}}><ChampionList navigator={this.props.navigator}/></View>
                         <View style={{flex:1}}><SearchUser navigator={this.props.navigator}/></View>
-                        <Text>排行</Text>
+                        <View style={{flex:1}}><WebView source={{uri:'http://bbs.duowan.com/forum-2376-1.html'}}></WebView></View>
                         <View style={{flex:1}}><MyDetail navigator={this.props.navigator}/></View>
                     </ScrollableTabView>
                 </View>

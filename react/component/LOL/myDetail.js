@@ -1,12 +1,7 @@
 
 import PageTitle from './../../common/PageTitle/index';
-
 import ModalDropdown from 'react-native-modal-dropdown';
-
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { Kohana } from 'react-native-textinput-effects';
-
-
+import MyAccount from './myAccount';
 var Modal   = require('react-native-modalbox');
 
 
@@ -19,7 +14,11 @@ export default class Demo extends Component {
             swipeToClose:true,
             selected_title:'选择大区',
             selected_area_id:'',
+            keyword:'',
             area_list:[],
+            is_bind:false,
+            qquin:'',
+            area_id:'',
         };
 
         this._getAreaList();
@@ -81,8 +80,38 @@ export default class Demo extends Component {
     }
 
     _handleSure = ()=>{
-        if(this.state.selected_area_id&&this.state.selected_title){
-            this.refs.modal.close();
+        if(this.state.selected_area_id&&this.state.keyword){
+            let fetchUtil = new FetchUtil();
+            fetchUtil.init()
+                .setUrl(URL.LOL_USER_AREA+"?keyword="+this.state.keyword)
+                .setMethod('GET')
+                .setHeader({
+                    'DAIWAN-API-TOKEN':KEY.LOL_API_KEY
+                })
+                .dofetch()
+                .then((data)=>{
+                    let res = data.data;
+                    let isExist = false;
+                    for(let i of res){
+                        if(i.area_id==(parseInt(this.state.selected_area_id)+1)&&i.name==this.state.keyword){
+                            //展现数据
+                            this.setState({
+                                qquin:i.qquin,
+                                area_id:i.area_id,
+                                is_bind:true
+                            });
+                            isExist = true;
+                            break;
+                        }
+                    }
+                    if(!isExist){
+                        ToastAndroid.show("没找到该账户信息哦~~",ToastAndroid.SHORT);
+                    }
+                })
+                .catch((error)=>{
+                    alert('error:'+error);
+                })
+            //this.refs.modal.close();
         }
         else {
             ToastAndroid.show('请选择ID和大区',ToastAndroid.SHORT);
@@ -90,65 +119,82 @@ export default class Demo extends Component {
     }
 
     render() {
-        return (
-            <View style={{flex:1}}>
-                <PageTitle title="我的账户" navigator={this.props.navigator} showBack={false}/>
+        if(!this.state.is_bind){
+            return (
                 <View style={{flex:1}}>
-                    <Modal
-                        position='center'
-                        style={styles.modal}
-                        ref={"modal"}
-                        swipeToClose={this.state.swipeToClose}
-                        onOpened={this.onOpen}
-                        onClosingState={this.onClosingState}
-                        backdropOpacity={0.1}
-                        backdropContent={<Text></Text>}
-                        animationDuration={800}
-                        backdropPressToClose={false}
-                        entry="top"
-                    >
-                        <View style={{flex:1}}>
+                    <PageTitle title="我的账户" navigator={this.props.navigator} showBack={false}/>
+                    <View style={{flex:1}}>
+                        <Modal
+                            position='center'
+                            style={styles.modal}
+                            ref={"modal"}
+                            swipeToClose={this.state.swipeToClose}
+                            onOpened={this.onOpen}
+                            onClosingState={this.onClosingState}
+                            backdropOpacity={0.1}
+                            backdropContent={<Text></Text>}
+                            animationDuration={800}
+                            backdropPressToClose={false}
+                            entry="top"
+                        >
+                            <View style={{flex:1}}>
 
-                            <View style={{flexDirection:'column',height:130}}>
+                                <View style={{flexDirection:'column',height:130}}>
 
-                                <View style={{flex:1,margin:5}}>
-                                    <Kohana
-                                        style={{ backgroundColor: '#f9f5ed',borderWidth:1,borderRadius:5,borderColor:'#d4d4d3'}}
-                                        label={'游戏ID'}
-                                        iconClass={FontAwesome}
-                                        iconName={'anchor'}
-                                        iconColor={'#f4d29a'}
-                                        labelStyle={{ color: '#91627b' }}
-                                        inputStyle={{ color: '#91627b',fontSize:15}}
-                                    />
-                                </View>
-
-                                <View style={{flex:1,margin:5}}>
-                                    <ModalDropdown
-                                        options={this.state.area_list}
-                                        dropdownStyle={{backgroundColor:'#f9f5ed',flex:1,width:SceneWidth-10,alignItems:'center',justifyContent:'center'}}
-                                        onSelect={this._handleSelected}
-                                        textStyle={{fontSize:20}}
-                                    >
-                                        <View style={{backgroundColor: '#f9f5ed',borderWidth:1,borderRadius:5,borderColor:'#d4d4d3',height:50,justifyContent:'center'}}>
-                                            <Text style={{color:'#91627b',fontSize:18,fontWeight:'bold',marginLeft:15}}>{this.state.selected_title}</Text>
+                                    <View style={{flex:1,margin:5}}>
+                                        <View style={{backgroundColor: '#f9f5ed',borderWidth:1,borderRadius:5,borderColor:'#d4d4d3'}}>
+                                            <TextInput
+                                                placeholder="游戏ID"
+                                                style={{color:'#91627b',fontSize:18,fontWeight:'bold',textAlign:'center'}}
+                                                underlineColorAndroid="transparent"
+                                                onChangeText={(text)=>{
+                                                    this.setState({
+                                                        keyword:text
+                                                    });
+                                                }}
+                                            ></TextInput>
                                         </View>
-                                    </ModalDropdown>
+                                    </View>
+
+                                    <View style={{flex:1,margin:5}}>
+                                        <ModalDropdown
+                                            options={this.state.area_list}
+                                            dropdownStyle={{backgroundColor:'#f9f5ed',flex:1,width:SceneWidth-10,alignItems:'center',justifyContent:'center'}}
+                                            onSelect={this._handleSelected}
+                                            textStyle={{fontSize:20}}
+                                        >
+                                            <View style={{backgroundColor: '#f9f5ed',borderWidth:1,borderRadius:5,borderColor:'#d4d4d3',height:50,justifyContent:'center'}}>
+                                                <Text style={{color:'#91627b',fontSize:18,fontWeight:'bold',textAlign:'center'}}>{this.state.selected_title}</Text>
+                                            </View>
+                                        </ModalDropdown>
+                                    </View>
+
                                 </View>
 
-                            </View>
-
-                            <View style={{alignItems:'center',margin:10}}>
-                                <View style={{width:300,height:50,alignItems:'center',backgroundColor:'#6bbb58',justifyContent:'center',borderRadius:10}}>
-                                    <TouchableOpacity onPress={()=>{this._handleSure()}}><Text style={{fontSize:25,color:'#fff'}}>绑定</Text></TouchableOpacity>
+                                <View style={{alignItems:'center',margin:10}}>
+                                    <View style={{width:300,height:50,alignItems:'center',backgroundColor:'#6bbb58',justifyContent:'center',borderRadius:10}}>
+                                        <TouchableOpacity onPress={()=>{this._handleSure()}}><Text style={{fontSize:25,color:'#fff'}}>绑定</Text></TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
 
-                    </Modal>
+                        </Modal>
+                    </View>
                 </View>
-            </View>
-        );
+            );
+        }
+        else {
+            //成功绑定
+            return (
+                <View style={{flex:1}}>
+                    <PageTitle title="我的账户" navigator={this.props.navigator} showBack={false}/>
+                    <View style={{flex:1}}>
+                        <MyAccount qquin={this.state.qquin} area_id={this.state.area_id} navigator={this.props.navigator}/>
+                    </View>
+                </View>
+            );
+        }
+
     }
 
 

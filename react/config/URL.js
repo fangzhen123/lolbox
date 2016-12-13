@@ -93,4 +93,6 @@ export default URL = {
     LOL_CHAMPION_RANK:'http://lolapi.games-cube.com/ChampionRank',
 
     LOL_SEARCH_CHAMPION:'http://1.fz123456.sinaapp.com/LOL/searchChampion.php',
+
+    LOL_API_TOKEN:'http://1.fz123456.sinaapp.com/LOL/getToken.php',
 };

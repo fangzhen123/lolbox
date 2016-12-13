@@ -7,15 +7,38 @@ import './config/config';
 
 import Index from './component/LOL/index';
 
-var backCount;//记录用户按返回键的次数
+global.KEY = {};
 
+var backCount;//记录用户按返回键的次数
 
 //应用导航控制器
 class NavigatorController extends Component{
     constructor(props){
         super(props);
+        this.state = {
+            isGetToken:false,
+        }
+        this._getToken();
+    }
+
+    _getToken = ()=>{
+        let fetchUtil = new FetchUtil();
+        fetchUtil.init()
+            .setUrl(URL.LOL_API_TOKEN)
+            .setMethod('GET')
+            .dofetch()
+            .then((data) => {
+                KEY['LOL_API_KEY'] = data[0].token;
+                this.setState({
+                    isGetToken:true,
+                });
+            })
+            .catch((error) => {
+                console.log('=> catch: ', error);
+            });
     }
     render(){
+
         //初始化路由页面
         let initialRoute = {
             name:'index',
@@ -25,14 +48,21 @@ class NavigatorController extends Component{
             },//可传递参数
         };
 
+        if(this.state.isGetToken){
+            return (
+                <Navigator
+                    initialRoute={initialRoute}
+                    renderScene={(route,navigator)=>this._renderScene(route,navigator)}
+                    configureScene={route=>this._configureScene(route)}
+                />
+            )
+        }
+        else {
+            return (
+                <View></View>
+            );
+        }
 
-        return (
-            <Navigator
-                initialRoute={initialRoute}
-                renderScene={(route,navigator)=>this._renderScene(route,navigator)}
-                configureScene={route=>this._configureScene(route)}
-            />
-        )
     }
 
     _renderScene(route,navigator){

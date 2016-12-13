@@ -83,8 +83,8 @@ global.URL = URL;
 /**
  * 相关配置密钥
  */
-import KEY from './constant';
-global.KEY = KEY;
+//import KEY from './constant';
+//global.KEY = KEY;
 
 
 /**
